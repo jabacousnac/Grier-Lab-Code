@@ -11,6 +11,8 @@
 from .Task import Task
 from PyQt5.QtGui import QVector3D #data type for trap.r
 import numpy as np
+import sys
+from datetime import datetime
 
 class RecordTrap(Task):
     """Move the trap by dragging, record its position, and take experiment"""
@@ -19,10 +21,11 @@ class RecordTrap(Task):
         super(RecordTrap, self).__init__(**kwargs)
         self.traps = None
         self.measure_bg = False #set to true if we want to measure background, and write task about saving background
-        self.nframe = 50 #not necessary
+        self.nframe = 10 #not necessary
 
     def initialize(self, frame):
         self.traps = self.parent.pattern.pattern
+        self.ntraps = self.traps.count()
         xc = self.parent.cgh.device.xc
         trap = self.traps.flatten()[0]
         self.r = np.array((trap.r.x(), trap.r.y()))
@@ -30,12 +33,17 @@ class RecordTrap(Task):
 
     def dotask(self):
         self.traps = self.parent.pattern.pattern
-        n = 0
-        while n < self.nframe: #have some way to know when to stop
-            dx,dy,dz = -1.0,0.0,0.0
-            dr = QVector3D(dx,dy,dz)
-            self.register('Translate', traps=self.traps, dr=dr) #remove 'Translate" and see if mouse drag is possible while recording trap position
-            for trap in self.traps.flatten():
-                coord = (trap.r.x(), trap.r.y(), trap.r.z())
-                print(coord)
-            n+=1
+        self.ntraps = self.traps.count()
+        framenum = 0 #this is the frame number we are at
+        dx,dy,dz = -1.0,0.0,0.0
+        dr = QVector3D(dx,dy,dz)
+        #fname = str(datetime.now()) #to give a unique name to textfile
+        while framenum < self.nframe: 
+            self.register('Translate', traps=self.traps, dr=dr) 
+            self.register('TrapLocateTest', traps=self.traps, ntraps=self.ntraps)
+			#self.register('FindTraps', ntraps=self.ntraps) OTHER WAY BUT WHO KNOWS WHAT THE OUTPUT IS
+            #with open(fname, 'w') as txtfile:
+                #sys.stdout = txtfile
+            framenum+=1
+                 
+
