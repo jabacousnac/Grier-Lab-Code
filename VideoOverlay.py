@@ -2,10 +2,11 @@ import cv2
 import os
 import datetime
 from matplotlib import pyplot as plt
+import json
 
 """Convert a video into frames, add trap positions, then convert back into a video"""
 #code adapted from https://medium.com/@iKhushPatel/convert-video-to-images-images-to-video-using-opencv-python-db27a128a481
-vidcap = cv2.VideoCapture('bird.avi') #change to name of file
+vidcap = cv2.VideoCapture('1.avi') #change to name of file
 time = datetime.datetime.now()
 
 def getFrames(sec):
@@ -13,8 +14,9 @@ def getFrames(sec):
     vidcap.set(cv2.CAP_PROP_POS_MSEC, sec * 1000)
     hasFrames, image = vidcap.read()
     if hasFrames:
-        fn = str(time)[0:10] + '_t' + str(count) + '.png'
-        cv2.imwrite(fn, image)
+		print(count)
+		fn = str(time)[0:10] + '_t' + str(count) + '.png'
+		cv2.imwrite(fn, image)
     return hasFrames
 
 '''
@@ -23,14 +25,17 @@ frameRate = 1/30
 count = 1
 success = getFrames(sec)
 while success:
-    count = count + 1
-    sec = sec + frameRate
-    sec = round(sec, 2)
-    success = getFrames(sec)
+	count = count + 1
+	sec = sec + frameRate
+	sec = round(sec, 2)
+	success = getFrames(sec)
 '''
 
 def get_pos():
-    """Obtain the trap positions in the form of 2D vectors, X and Y"""
+	"""Obtain the trap positions in the form of 2D vectors, X and Y"""
+	with open('1.json', 'w') as jsonfile: #change to json filename
+		data = json.load(jsonfile)
+		print(data)
 
 def overlay():
     """Given the trap positions, now overlay on the frames"""
@@ -42,7 +47,7 @@ def overlay():
                 fig, ax = plt.subplots()
                 ax.imshow(X)
                 ax.axis('off')
-                plt.plot(X,Y,'ro')
+                plt.plot([0], [123], 'ro')
                 plt.show()
     return
 
@@ -50,5 +55,5 @@ def stitchFrames():
     """Convert the frames into a video"""
 
 if __name__ == '__main__':
-    modifyFrames()
+    get_pos()
     #getFrames(0)
