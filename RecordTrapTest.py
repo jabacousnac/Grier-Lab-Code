@@ -16,7 +16,7 @@ class RecordTrapTest(Task):
         super(RecordTrapTest, self).__init__(**kwargs)
         self.traps = None
         self.measure_bg = False 
-        self.nframes = 500
+        self.nframes = 1000
 
     def initialize(self, frame):
         self.traps = self.parent.pattern.pattern
@@ -28,10 +28,10 @@ class RecordTrapTest(Task):
     def dotask(self):
         self.traps = self.parent.pattern.pattern
         self.ntraps = self.traps.count()
-        dx, dy, dz, framenum = 0.1, 0.0, 0.0, 0
+        dx, dy, dz, framenum = 0.5, 0.0, 0.0, 0
         self.nframes = 500
         dr = QVector3D(dx,dy,dz)
-        self.register('Record', fn = fname + '.avi', stop = False, nframes = 500)
+        self.register('Record', fn = fname + '.avi', stop = False)
         while framenum < self.nframes:
             self.register('Translate', traps=self.traps, dr=dr)
             self.register('TrapLocateTest', fn=fname, traps=self.traps, ntraps=self.ntraps)

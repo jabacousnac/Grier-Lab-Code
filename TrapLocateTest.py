@@ -1,5 +1,5 @@
 from .Task import Task
-from PyQt5.QtGui import QVector3D #data type for trap.r
+from PyQt5.QtGui import QVector3D 
 import numpy as np
 import json
 
