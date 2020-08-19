@@ -30,9 +30,6 @@ class RecordTrapTest(Task):
     def dotask(self):
         dx, dy, dz = 0.2, 0.0, 0.0
         dr = QVector3D(dx,dy,dz)
-        #self.register('Record', fn = fname + '.avi', stop = False)
-        #while framenum < self.nframes:
-        print(self.framenum)
         if self.framenum < self.nframes:
             self.register('Translate', traps=self.traps, dr=dr)
             self.register('TrapLocateTest', fn=fname, traps=self.traps, ntraps=self.ntraps)
