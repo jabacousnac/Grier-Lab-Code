@@ -1,4 +1,4 @@
-import cv2
+import cv2 as cv
 import os
 import datetime
 import json
@@ -7,7 +7,7 @@ import re
 """Convert a video into frames, add trap positions, then convert back into a video"""
 #part of code adapted from https://medium.com/@iKhushPatel/convert-video-to-images-images-to-video-using-opencv-python-db27a128a481
 fname = '2020-08-20--16_51_30' #change to name of file
-vidcap = cv2.VideoCapture(fname + '.avi')
+vidcap = cv.VideoCapture(fname + '.avi')
 time = datetime.datetime.now()
 fps = 30 #change accordingly
 
@@ -31,15 +31,15 @@ def get_pos():
 
 def getFrames(sec):
     """Convert video into frames"""
-    vidcap.set(cv2.CAP_PROP_POS_MSEC, sec * 1000)
+    vidcap.set(c.CAP_PROP_POS_MSEC, sec * 1000)
     hasFrames, image = vidcap.read()
     radius, color, thickness = 5, (0,255,0), -1 #change for ring trap
     if hasFrames and count < len(X):
         fn = str(time)[0:10] + '_t' + str(count+1) + '.png'
         print(fn)
         imageList.append(fn)
-        img = cv2.circle(cv2.imwrite(fn, image), (X[count],Y[count]), radius, color, thickness)
-        cv2.imwrite(fn, img)
+        img = cv.circle(cv.imwrite(fn, image), (X[count],Y[count]), radius, color, thickness)
+        cv.imwrite(fn, img)
     else:
         return [False, imageList]
     return [hasFrames, imageList]
@@ -54,14 +54,14 @@ def stitchFrames():
     """Convert the frames into a video"""
     directory = os.getcwd()
     images = getFrames(sec)[1]
-    frame = cv2.imread(os.path.join(directory, images[0]))
+    frame = cv.imread(os.path.join(directory, images[0]))
     height, width, layers = frame.shape
-    vid = cv2.VideoWriter(fname + '.avi', 0, fps, (width, height))
+    vid = cv.VideoWriter(fname + '.avi', 0, fps, (width, height))
     for image in images:
         print(image)
-        vid.write(cv2.imread(os.path.join(directory, image)))
+        vid.write(cv.imread(os.path.join(directory, image)))
         #os.remove(os.path.join(directory, image)) #unexpected consequences!
-    cv2.destroyAllWindows()
+    cv.destroyAllWindows()
     vid.release()
     print(datetime.datetime.now() - time) #to know how long it takes to run this file
 
