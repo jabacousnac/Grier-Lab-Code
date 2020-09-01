@@ -39,7 +39,7 @@ def getFrames(sec):
         print(fn)
         imageList.append(fn)
         img = cv2.circle(cv2.imwrite(fn, image), (X[count],Y[count]), radius, color, thickness)
-        cv.imwrite(fn, img)
+        cv2.imwrite(fn, img)
     else:
         return [False, imageList]
     return [hasFrames, imageList]
