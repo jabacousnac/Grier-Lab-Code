@@ -3,8 +3,9 @@ from matplotlib import pyplot as plt
 import re
 import json
 from ParticleGetter import *
+import os
 
-def plotter():
+def plotter(ID):
     #first obtain trap coordinates
     fname = '2020-09-16--14-47-43'
     dx, dy, dz = 0.0, 0.0, 0.0 #for uncalibrated traps
@@ -43,13 +44,9 @@ def plotter():
             print(frame)
     #If we have multiple particles
     df = find_trajs()
-    ID = 2
     Xp = [col[1] for row,col in df.iterrows() if col[5] == ID]
     Yp = [col[2] for row,col in df.iterrows() if col[5] == ID]
     Zp = [col[3] for row,col in df.iterrows() if col[5] == ID]
-    #Yp = coords[:1]
-    #Zp = coords[:2]
-    print(Xp)
     #plot
     plt.plot(Xt, 'r-')
     plt.plot(Yt, 'b-')
@@ -57,11 +54,16 @@ def plotter():
     plt.plot(Xp, 'r--')
     plt.plot(Yp, 'b--')
     plt.plot(Zp, 'g--')
-    plt.title('Trap/Particle Trajectories_' + fname)
+    title = 'Trap/Particle Trajectories_' + fname + ' ' + 'Particle ID = ' + str(ID)
+    plt.title(title)
     plt.ylabel('Position (pixels)')
     plt.xlabel('Time (frames)')
     plt.legend(('$x_{t}$', '$y_{t}$', '$z_{t}$', '$x_{p}$', '$y_{p}$', '$z_{p}$'))
-    plt.show()
+    folder_path = path + '/trajectories/'
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+    plt.savefig(folder_path + 'trajs_particle_ID#: ' + str(ID) + '.png', dpi = 'figure')
 
 if __name__ == '__main__':
-    plotter()
+    path = os.getcwd()
+    plotter(2) #change the particle ID

@@ -5,7 +5,7 @@ from pandas import DataFrame, Series
 #import numpy as np
 import trackpy as tp
 from matplotlib import pyplot as plt
-import cv2 as cv #apparently, it needs to be commented out for Plot Trajectories to work
+#import cv2 as cv #apparently, it needs to be commented out for Plot Trajectories to work
 
 def get_partDict():
     #obtain a dictionary of form {framenumber: [p1, p2, p3, ...]}, where p's are particle coordinates
@@ -23,6 +23,8 @@ def get_partDict():
                 partDict[frame] = [param]
     return partDict
 
+
+# noinspection PyInterpreter
 def find_trajs():
     #find the trajectories of particles across an experiment
     partDict = get_partDict()
@@ -81,13 +83,16 @@ def pull_up_IDs(frame): #frame is a string ####
     font = cv.FONT_HERSHEY_SIMPLEX
     for row, col in df.iterrows():
         if int(col[0]) == int(frame):
-            marker = col[5]
             im = cv.putText(im, str(int(col[5])), (int(col[1]), int(col[2])), font, 1, (0,0,0), 2, cv.LINE_AA)
     cv.imshow('image', im)
-    cv.imwrite(path + '/particle_IDs/' + frame + '.png', im)
+    folder_path = path + '/particle_IDs/'
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+    cv.imwrite(folder_path + frame + '.png', im)
     cv.waitKey(0)
     cv.destroyAllWindows()
 
 if __name__ == '__main__':
     path = os.getcwd()
-    pull_up_IDs('1111')
+    find_trajs()
+    #pull_up_IDs('1000')
