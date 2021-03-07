@@ -20,21 +20,13 @@ class QDoGTrap(QTrap):
         self.registerProperty('tau', tooltip=True)
 
     def updateStructure(self):
-#1. real units -> pixels
-        wavelength = 1064e-9 / (48e-9)
-        z = 1e-6 / (48e-9)
-#2. kappa, a, b are quantities to simplify calculations
+        wavelength = 1064e-9/48e-9
+        z = 1e-6/48e-9
+        q = 2 * np.pi / (wavelength * 1.49) #k/n_m
         kappa = 1j * np.pi /(wavelength * z)
-        a, b = 1/(self.sigma)**2 - kappa, 1/(self.tau)**2 - kappa
-#3. get phase part
-        arg = (a * np.exp(-a * (self.cgh.qr)**2)) - \
-        (b * np.exp(-b * (self.cgh.qr)**2))
-#4. get amplitude part
-        u = -kappa * np.exp((1j * 2*np.pi/wavelength * z) + kappa * (self.cgh.qr)**2) * \
-        (1/a * np.exp(kappa**2 * (self.cgh.qr)**2 / a) - 1/b * np.exp(kappa**2 * (self.cgh.qr)**2 / b))
-        self.structure = np.exp(1j * np.angle(arg)) * u
-        print (np.exp(1j * np.angle(arg)) * u)
-
+        u = np.exp((kappa * self.cgh.qr / q * self.sigma)**2) - np.exp((kappa * self.cgh.qr / q * self.tau)**2)
+        phi = np.angle(np.sin(u) / (np.cos(u)-1))
+        self.structure = np.exp(1j * phi) * u
 
     def plotSymbol(self):
         sym = QPainterPath()
