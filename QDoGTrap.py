@@ -22,7 +22,7 @@ class QDoGTrap(QTrap):
     def updateStructure(self):
         wavelength = 1064e-9/48e-9
         z = 1e-6/48e-9
-        q = 2 * np.pi / (wavelength * 1.49) #k/n_m
+        q = 2 * np.pi * 1.49 / wavelength
         kappa = 1j * np.pi /(wavelength * z)
         u = np.exp((kappa * self.cgh.qr / q * self.sigma)**2) - np.exp((kappa * self.cgh.qr / q * self.tau)**2)
         phi = np.angle(np.sin(u) / (np.cos(u)-1))
